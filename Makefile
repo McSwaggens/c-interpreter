@@ -6,9 +6,7 @@ TARGET	= cint
 SRCS	= picoc.c table.c lex.c parse.c expression.c heap.c type.c \
 	variable.c clibrary.c platform.c include.c debug.c \
 	platform/platform_unix.c platform/library_unix.c \
-	cstdlib/stdio.c cstdlib/math.c cstdlib/string.c cstdlib/stdlib.c \
-	cstdlib/time.c cstdlib/errno.c cstdlib/ctype.c cstdlib/stdbool.c \
-	cstdlib/unistd.c
+	cstdlib/stdio.c cstdlib/math.c
 OBJS	:= $(SRCS:%.c=%.o)
 
 all: $(TARGET)
@@ -50,7 +48,6 @@ cstdlib/math.o: cstdlib/math.c interpreter.h platform.h
 cstdlib/string.o: cstdlib/string.c interpreter.h platform.h
 cstdlib/stdlib.o: cstdlib/stdlib.c interpreter.h platform.h
 cstdlib/time.o: cstdlib/time.c interpreter.h platform.h
-cstdlib/errno.o: cstdlib/errno.c interpreter.h platform.h
 cstdlib/ctype.o: cstdlib/ctype.c interpreter.h platform.h
 cstdlib/stdbool.o: cstdlib/stdbool.c interpreter.h platform.h
 cstdlib/unistd.o: cstdlib/unistd.c interpreter.h platform.h
