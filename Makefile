@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall -pedantic -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
 LIBS=-lm -lreadline
 
-TARGET	= picoc
+TARGET	= cint
 SRCS	= picoc.c table.c lex.c parse.c expression.c heap.c type.c \
 	variable.c clibrary.c platform.c include.c debug.c \
 	platform/platform_unix.c platform/library_unix.c \
