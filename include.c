@@ -11,7 +11,7 @@
 void IncludeInit(Picoc *pc)
 {
     IncludeRegister(pc, "math.h", &MathSetupFunc, &MathFunctions[0], NULL);
-    IncludeRegister(pc, "standard.h", &StdioSetupFunc, &StdioFunctions[0], StdioDefs);
+    IncludeRegister(pc, "standard.h", &StandardSetupFunc, &StandardFunctions[0], StandardDefs);
 }
 
 /* clean up space used by the include system */

@@ -616,9 +616,9 @@ void DebugCheckStatement(struct ParseState *Parser);
 
 
 /* stdio.c */
-extern const char StdioDefs[];
-extern struct LibraryFunction StdioFunctions[];
-void StdioSetupFunc(Picoc *pc);
+extern const char StandardDefs[];
+extern struct LibraryFunction StandardFunctions[];
+void StandardSetupFunc(Picoc *pc);
 
 /* math.c */
 extern struct LibraryFunction MathFunctions[];

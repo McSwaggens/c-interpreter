@@ -8,7 +8,7 @@
 #define MAX_FORMAT 80
 #define MAX_SCANF_ARGS 10
 
-static int Stdio_ZeroValue = 0;
+static int Standard_ZeroValue = 0;
 static int EOFValue = EOF;
 
 /* our own internal output stream which can output to FILE * or strings */
@@ -34,26 +34,26 @@ void BasicIOInit(Picoc *pc)
     pc->CStdOut = stdout;
 }
 
-void StdioPrint(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
+void StandardPrint(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
     printf ((char*)Param[0]->Val->Pointer);
 }
 
 /* handy structure definitions */
-const char StdioDefs[] = "\
+const char StandardDefs[] = "\
 typedef struct __va_listStruct va_list; \
 typedef struct __FILEStruct FILE;\
 ";
 
 /* all stdio functions */
-struct LibraryFunction StdioFunctions[] =
+struct LibraryFunction StandardFunctions[] =
 {
-    { StdioPrint,  "void print(char *);" },
+    { StandardPrint,  "void print(char *);" },
     { NULL,         NULL }
 };
 
 /* creates various system-dependent definitions */
-void StdioSetupFunc(Picoc *pc)
+void StandardSetupFunc(Picoc *pc)
 {
     struct ValueType *StructFileType;
     struct ValueType *FilePtrType;
@@ -72,7 +72,7 @@ void StdioSetupFunc(Picoc *pc)
     
     /* define NULL, TRUE and FALSE */
     if (!VariableDefined(pc, TableStrRegister(pc, "NULL")))
-        VariableDefinePlatformVar(pc, NULL, "NULL", &pc->IntType, (union AnyValue *)&Stdio_ZeroValue, FALSE);
+        VariableDefinePlatformVar(pc, NULL, "NULL", &pc->IntType, (union AnyValue *)&Standard_ZeroValue, FALSE);
 }
 
 /* portability-related I/O calls */
