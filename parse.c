@@ -797,7 +797,7 @@ enum ParseResult ParseStatement(struct ParseState *Parser, int CheckTrailingSemi
                 }
                 else
                 {
-                    ProgramFail(Parser, "\"filename.h\" expected");
+                    ProgramFail(Parser, "either \"filename.h\" or <filename.h> expected");
                 }
                 
                 break;
