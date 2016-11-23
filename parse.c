@@ -2,6 +2,7 @@
 
 #include "picoc.h"
 #include "interpreter.h"
+#include <stdio.h>
 
 /* deallocate any memory */
 void ParseCleanup(Picoc *pc)
@@ -240,7 +241,8 @@ int ParseArrayInitialiser(struct ParseState *Parser, struct Value *NewVariable, 
                     ElementType = ElementType->FromType;
                     
                     /* char x[10][10] = {"abc", "def"} => assign "abc" to x[0], "def" to x[1] etc */
-                    if (LexGetToken(Parser, NULL, FALSE) == TokenStringConstant && ElementType->FromType->Base == TypeChar)
+                    enum LexToken tkn = LexGetToken(Parser, NULL, FALSE);
+                    if ((tkn == TokenStringConstant || tkn == TokenVBracketConstant) && ElementType->FromType->Base == TypeChar)
                         break;
                 }
                 ElementSize = TypeSize(ElementType, ElementType->ArraySize, TRUE);
@@ -779,12 +781,27 @@ enum ParseResult ParseStatement(struct ParseState *Parser, int CheckTrailingSemi
             
 #ifndef NO_HASH_INCLUDE
         case TokenHashInclude:
-            if (LexGetToken(Parser, &LexerValue, TRUE) != TokenStringConstant)
-                ProgramFail(Parser, "\"filename.h\" expected");
-            
-            IncludeFile(Parser->pc, (char *)LexerValue->Val->Pointer);
-            CheckTrailingSemicolon = FALSE;
-            break;
+            {
+                enum LexToken token = LexGetToken(Parser, &LexerValue, TRUE);
+                
+                if (token == TokenStringConstant)
+                {
+                    IncludeFile(Parser->pc, (char *)LexerValue->Val->Pointer);
+                    CheckTrailingSemicolon = FALSE;
+                }
+                else
+                if (token == TokenVBracketConstant)
+                {
+                    IncludePredefinedFile(Parser->pc, (char *)LexerValue->Val->Pointer);
+                    CheckTrailingSemicolon = FALSE;
+                }
+                else
+                {
+                    ProgramFail(Parser, "\"filename.h\" expected");
+                }
+                
+                break;
+            }
 #endif
 
         case TokenSwitch:

@@ -81,7 +81,7 @@ enum LexToken
     /* 0x21 */ TokenIncrement, TokenDecrement, TokenUnaryNot, TokenUnaryExor, TokenSizeof, TokenCast,
     /* 0x27 */ TokenLeftSquareBracket, TokenRightSquareBracket, TokenDot, TokenArrow, 
     /* 0x2b */ TokenOpenBracket, TokenCloseBracket,
-    /* 0x2d */ TokenIdentifier, TokenIntegerConstant, TokenFPConstant, TokenStringConstant, TokenCharacterConstant,
+    /* 0x2d */ TokenIdentifier, TokenIntegerConstant, TokenFPConstant, TokenVBracketConstant, TokenStringConstant, TokenCharacterConstant,
     /* 0x32 */ TokenSemicolon, TokenEllipsis,
     /* 0x34 */ TokenLeftBrace, TokenRightBrace,
     /* 0x36 */ TokenIntType, TokenCharType, TokenFloatType, TokenDoubleType, TokenVoidType, TokenEnumType,
@@ -605,6 +605,7 @@ void PlatformLibraryInit(Picoc *pc);
 void IncludeInit(Picoc *pc);
 void IncludeCleanup(Picoc *pc);
 void IncludeRegister(Picoc *pc, const char *IncludeName, void (*SetupFunction)(Picoc *pc), struct LibraryFunction *FuncList, const char *SetupCSource);
+void IncludePredefinedFile(Picoc *pc, char *Filename);
 void IncludeFile(Picoc *pc, char *Filename);
 /* the following is defined in picoc.h:
  * void PicocIncludeAllSystemHeaders(); */

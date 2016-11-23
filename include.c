@@ -51,8 +51,8 @@ void PicocIncludeAllSystemHeaders(Picoc *pc)
         IncludeFile(pc, ThisInclude->IncludeName);
 }
 
-/* include one of a number of predefined libraries, or perhaps an actual file */
-void IncludeFile(Picoc *pc, char *FileName)
+/* include one of a number of predefined libraries */
+void IncludePredefinedFile(Picoc *pc, char *FileName)
 {
     struct IncludeLibrary *LInclude;
     
@@ -78,12 +78,13 @@ void IncludeFile(Picoc *pc, char *FileName)
                 if (LInclude->FuncList != NULL)
                     LibraryAdd(pc, &pc->GlobalTable, FileName, LInclude->FuncList);
             }
-            
             return;
         }
     }
-    
-    /* not a predefined file, read a real file */
+}
+
+void IncludeFile(Picoc *pc, char *FileName)
+{
     PicocPlatformScanFile(pc, FileName);
 }
 

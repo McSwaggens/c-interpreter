@@ -322,6 +322,71 @@ unsigned char LexUnEscapeCharacter(const char **From, const char *End)
 }
 
 /* get a string constant - used while scanning */
+enum LexToken LexGetVBracketConstant(Picoc *pc, struct LexState *Lexer, struct Value *Value, char EndChar)
+{
+    int Escape = FALSE;
+    const char *StartPos = Lexer->Pos;
+    const char *EndPos;
+    char *EscBuf;
+    char *EscBufPos;
+    char *RegString;
+    struct Value *ArrayValue;
+    
+    while (Lexer->Pos != Lexer->End && (*Lexer->Pos != EndChar || Escape))
+    { 
+        /* find the end */
+        if (Escape)
+        {
+            if (*Lexer->Pos == '\r' && Lexer->Pos+1 != Lexer->End)
+                Lexer->Pos++;
+            
+            if (*Lexer->Pos == '\n' && Lexer->Pos+1 != Lexer->End)
+            {
+                Lexer->Line++;
+                Lexer->Pos++;
+                Lexer->CharacterPos = 0;
+                Lexer->EmitExtraNewlines++;
+            }
+            
+            Escape = FALSE;
+        }
+        else if (*Lexer->Pos == '\\')
+            Escape = TRUE;
+            
+        LEXER_INC(Lexer);
+    }
+    EndPos = Lexer->Pos;
+    
+    EscBuf = HeapAllocStack(pc, EndPos - StartPos);
+    if (EscBuf == NULL)
+        LexFail(pc, Lexer, "out of memory");
+    
+    for (EscBufPos = EscBuf, Lexer->Pos = StartPos; Lexer->Pos != EndPos;)
+        *EscBufPos++ = LexUnEscapeCharacter(&Lexer->Pos, EndPos);
+    
+    /* try to find an existing copy of this string literal */
+    RegString = TableStrRegister2(pc, EscBuf, EscBufPos - EscBuf);
+    HeapPopStack(pc, EscBuf, EndPos - StartPos);
+    ArrayValue = VariableStringLiteralGet(pc, RegString);
+    if (ArrayValue == NULL)
+    {
+        /* create and store this string literal */
+        ArrayValue = VariableAllocValueAndData(pc, NULL, 0, FALSE, NULL, TRUE);
+        ArrayValue->Typ = pc->CharArrayType;
+        ArrayValue->Val = (union AnyValue *)RegString;
+        VariableStringLiteralDefine(pc, RegString, ArrayValue);
+    }
+
+    /* create the the pointer for this char* */
+    Value->Typ = pc->CharPtrType;
+    Value->Val->Pointer = RegString;
+    if (*Lexer->Pos == EndChar)
+        LEXER_INC(Lexer);
+    
+    return TokenVBracketConstant;
+}
+
+/* get a string constant - used while scanning */
 enum LexToken LexGetStringConstant(Picoc *pc, struct LexState *Lexer, struct Value *Value, char EndChar)
 {
     int Escape = FALSE;
@@ -486,7 +551,7 @@ enum LexToken LexScanGetToken(Picoc *pc, struct LexState *Lexer, struct Value **
             case '*': NEXTIS('=', TokenMultiplyAssign, TokenAsterisk); break;
             case '/': if (NextChar == '/' || NextChar == '*') { LEXER_INC(Lexer); LexSkipComment(Lexer, NextChar, &GotToken); } else NEXTIS('=', TokenDivideAssign, TokenSlash); break;
             case '%': NEXTIS('=', TokenModulusAssign, TokenModulus); break;
-            case '<': if (Lexer->Mode == LexModeHashInclude) GotToken = LexGetStringConstant(pc, Lexer, *Value, '>'); else { NEXTIS3PLUS('=', TokenLessEqual, '<', TokenShiftLeft, '=', TokenShiftLeftAssign, TokenLessThan); } break; 
+            case '<': if (Lexer->Mode == LexModeHashInclude) GotToken = LexGetVBracketConstant(pc, Lexer, *Value, '>'); else { NEXTIS3PLUS('=', TokenLessEqual, '<', TokenShiftLeft, '=', TokenShiftLeftAssign, TokenLessThan); } break; 
             case '>': NEXTIS3PLUS('=', TokenGreaterEqual, '>', TokenShiftRight, '=', TokenShiftRightAssign, TokenGreaterThan); break;
             case ';': GotToken = TokenSemicolon; break;
             case '&': NEXTIS3('=', TokenArithmeticAndAssign, '&', TokenLogicalAnd, TokenAmpersand); break;
@@ -514,7 +579,7 @@ int LexTokenSize(enum LexToken Token)
 {
     switch (Token)
     {
-        case TokenIdentifier: case TokenStringConstant: return sizeof(char *);
+        case TokenIdentifier: case TokenStringConstant:case TokenVBracketConstant: return sizeof(char *);
         case TokenIntegerConstant: return sizeof(long);
         case TokenCharacterConstant: return sizeof(unsigned char);
         case TokenFPConstant: return sizeof(double);
@@ -717,6 +782,7 @@ enum LexToken LexGetRawToken(struct ParseState *Parser, struct Value **Value, in
             switch (Token)
             {
                 case TokenStringConstant:       pc->LexValue.Typ = pc->CharPtrType; break;
+                case TokenVBracketConstant:       pc->LexValue.Typ = pc->CharPtrType; break;
                 case TokenIdentifier:           pc->LexValue.Typ = NULL; break;
                 case TokenIntegerConstant:      pc->LexValue.Typ = &pc->LongType; break;
                 case TokenCharacterConstant:    pc->LexValue.Typ = &pc->CharType; break;
