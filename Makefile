@@ -3,8 +3,8 @@ CFLAGS=-Wall -pedantic -fpermissive -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
 LIBS=-lm -lreadline
 
 TARGET	= cint
-SRCS	= picoc.c table.c lex.c parse.c expression.c heap.c type.c \
-	variable.c clibrary.c platform.c include.c debug.c \
+SRCS	= picoc.cpp table.cpp lex.cpp parse.cpp expression.cpp heap.cpp type.cpp \
+	variable.cpp clibrary.cpp platform.cpp include.cpp debug.cpp \
 	platform/platform_unix.c platform/library_unix.c \
 	cstdlib/standard.c cstdlib/math.c
 OBJS	:= $(SRCS:%.c=%.o)
@@ -18,28 +18,21 @@ test:	all
 	(cd tests; make test)
 
 clean:
-	rm -f $(TARGET) $(OBJS) *~
-
-count:
-	@echo "Core:"
-	@cat picoc.h interpreter.h picoc.c table.c lex.c parse.c expression.c platform.c heap.c type.c variable.c include.c debug.c | grep -v '^[ 	]*/\*' | grep -v '^[ 	]*$$' | wc
-	@echo ""
-	@echo "Everything:"
-	@cat $(SRCS) *.h */*.h | wc
+	rm -f $(TARGET) *.o
 
 
-picoc.o: picoc.c picoc.h
-table.o: table.c interpreter.h platform.h
-lex.o: lex.c interpreter.h platform.h
-parse.o: parse.c picoc.h interpreter.h platform.h
-expression.o: expression.c interpreter.h platform.h
-heap.o: heap.c interpreter.h platform.h
-type.o: type.c interpreter.h platform.h
-variable.o: variable.c interpreter.h platform.h
-clibrary.o: clibrary.c picoc.h interpreter.h platform.h
-platform.o: platform.c picoc.h interpreter.h platform.h
-include.o: include.c picoc.h interpreter.h platform.h
-debug.o: debug.c interpreter.h platform.h
+picoc.o: picoc.cpp picoc.h
+table.o: table.cpp interpreter.h platform.h
+lex.o: lex.cpp interpreter.h platform.h
+parse.o: parse.cpp picoc.h interpreter.h platform.h
+expression.o: expression.cpp interpreter.h platform.h
+heap.o: heap.cpp interpreter.h platform.h
+type.o: type.cpp interpreter.h platform.h
+variable.o: variable.cpp interpreter.h platform.h
+clibrary.o: clibrary.cpp picoc.h interpreter.h platform.h
+platform.o: platform.cpp picoc.h interpreter.h platform.h
+include.o: include.cpp picoc.h interpreter.h platform.h
+debug.o: debug.cpp interpreter.h platform.h
 platform/platform_unix.o: platform/platform_unix.c picoc.h interpreter.h platform.h
 platform/library_unix.o: platform/library_unix.c interpreter.h platform.h
 cstdlib/standard.o: cstdlib/standard.c interpreter.h platform.h
