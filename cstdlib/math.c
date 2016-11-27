@@ -84,11 +84,6 @@ void MathFmod(struct ParseState *Parser, struct Value *ReturnValue, struct Value
     ReturnValue->Val->FP = fmod(Param[0]->Val->FP, Param[1]->Val->FP);
 }
 
-void MathFrexp(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
-{
-    ReturnValue->Val->FP = frexp(Param[0]->Val->FP, Param[1]->Val->Pointer);
-}
-
 void MathLdexp(struct ParseState *Parser, struct Value *ReturnValue, struct Value **Param, int NumArgs)
 {
     ReturnValue->Val->FP = ldexp(Param[0]->Val->FP, Param[1]->Val->Integer);
@@ -150,7 +145,6 @@ struct LibraryFunction MathFunctions[] =
     { MathFabs,         "float fabs(float);" },
     { MathFloor,        "float floor(float);" },
     { MathFmod,         "float fmod(float, float);" },
-    { MathFrexp,        "float frexp(float, int *);" },
     { MathLdexp,        "float ldexp(float, int);" },
     { MathLog,          "float log(float);" },
     { MathLog10,        "float log10(float);" },

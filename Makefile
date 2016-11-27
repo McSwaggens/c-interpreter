@@ -1,5 +1,5 @@
-CC=gcc
-CFLAGS=-Wall -pedantic -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
+CC=g++
+CFLAGS=-Wall -pedantic -fpermissive -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
 LIBS=-lm -lreadline
 
 TARGET	= cint
@@ -27,7 +27,6 @@ count:
 	@echo "Everything:"
 	@cat $(SRCS) *.h */*.h | wc
 
-.PHONY: clibrary.c
 
 picoc.o: picoc.c picoc.h
 table.o: table.c interpreter.h platform.h

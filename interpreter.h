@@ -180,7 +180,7 @@ struct FuncDef
     int VarArgs;                    /* has a variable number of arguments after the explicitly specified ones */
     struct ValueType **ParamType;   /* array of parameter types */
     char **ParamName;               /* array of parameter names */
-    void (*Intrinsic)();            /* intrinsic call address or NULL */
+    void (*Intrinsic)(...);            /* intrinsic call address or NULL */
     struct ParseState Body;         /* lexical tokens of the function body if not intrinsic */
 };
 
@@ -227,6 +227,25 @@ struct Value
     char OutOfScope;
 };
 
+union TableEntryPayload
+{
+    struct ValueEntry
+    {
+        char *Key;              /* points to the shared string table */
+        struct Value *Val;      /* the value we're storing */
+    } v;                        /* used for tables of values */
+    
+    char Key[1];                /* dummy size - used for the shared string table */
+    
+    struct BreakpointEntry      /* defines a breakpoint */
+    {
+        const char *FileName;
+        short int Line;
+        short int CharacterPos;
+    } b;
+    
+};
+
 /* hash table data structure */
 struct TableEntry
 {
@@ -235,24 +254,7 @@ struct TableEntry
     unsigned short DeclLine;
     unsigned short DeclColumn;
 
-    union TableEntryPayload
-    {
-        struct ValueEntry
-        {
-            char *Key;              /* points to the shared string table */
-            struct Value *Val;      /* the value we're storing */
-        } v;                        /* used for tables of values */
-        
-        char Key[1];                /* dummy size - used for the shared string table */
-        
-        struct BreakpointEntry      /* defines a breakpoint */
-        {
-            const char *FileName;
-            short int Line;
-            short int CharacterPos;
-        } b;
-        
-    } p;
+    TableEntryPayload p;
 };
     
 struct Table
@@ -611,8 +613,8 @@ void IncludeFile(Picoc *pc, char *Filename);
  * void PicocIncludeAllSystemHeaders(); */
  
 /* debug.c */
-void DebugInit();
-void DebugCleanup();
+void DebugInit(Picoc *pc);
+void DebugCleanup(Picoc *pc);
 void DebugCheckStatement(struct ParseState *Parser);
 
 
