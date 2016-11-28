@@ -1,9 +1,9 @@
 CC=g++
 CFLAGS=-Wall -pedantic -fpermissive -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
-LIBS=-lm -lreadline
+LIBS=-lm -lreadline -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET	= cint
-SRCS	= picoc.cpp table.cpp lex.cpp parse.cpp expression.cpp heap.cpp type.cpp \
+SRCS	= picoc.cpp table.cpp lex.cpp parse.cpp expression.cpp heap.cpp type.cpp system_gpu.cpp \
 	variable.cpp clibrary.cpp platform.cpp include.cpp debug.cpp \
 	platform/platform_unix.c platform/library_unix.c \
 	cstdlib/standard.c cstdlib/math.c
@@ -21,7 +21,8 @@ clean:
 	rm -f $(TARGET) *.o
 
 
-picoc.o: picoc.cpp picoc.h
+picoc.o: picoc.cpp picoc.h system_gpu.h
+system_gpu.cpp: system_gpu.cpp system_gpu.h
 table.o: table.cpp interpreter.h platform.h
 lex.o: lex.cpp interpreter.h platform.h
 parse.o: parse.cpp picoc.h interpreter.h platform.h

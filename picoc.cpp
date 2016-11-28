@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "system_gpu.h"
 
 #define PICOC_STACK_SIZE (128*1024)              /* space for the the stack */
 
@@ -29,6 +30,8 @@ int main(int argc, char **argv)
     }
     
     PicocInitialise(&pc, StackSize);
+    
+    SystemGPU::Init();
     
     if (strcmp(argv[ParamCount], "-s") == 0 || strcmp(argv[ParamCount], "-m") == 0)
     {
