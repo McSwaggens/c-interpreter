@@ -623,6 +623,10 @@ extern const char StandardDefs[];
 extern struct LibraryFunction StandardFunctions[];
 void StandardSetupFunc(Picoc *pc);
 
+/* gpu.c */
+extern struct LibraryFunction GPUFunctions[];
+void GPUSetupFunc(Picoc *pc);
+
 /* math.c */
 extern struct LibraryFunction MathFunctions[];
 void MathSetupFunc(Picoc *pc);

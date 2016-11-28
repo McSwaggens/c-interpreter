@@ -11,6 +11,7 @@
 void IncludeInit(Picoc *pc)
 {
     IncludeRegister(pc, "math.h", &MathSetupFunc, &MathFunctions[0], NULL);
+    IncludeRegister(pc, "gpu.h", &GPUSetupFunc, &GPUFunctions[0], NULL);
     IncludeRegister(pc, "standard.h", &StandardSetupFunc, &StandardFunctions[0], StandardDefs);
 }
 

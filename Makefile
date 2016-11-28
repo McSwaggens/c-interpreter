@@ -1,12 +1,12 @@
 CC=g++
-CFLAGS=-Wall -pedantic -fpermissive -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
+CFLAGS=-Wall -w -fpermissive -g -DUNIX_HOST -DVER=\"`svnversion -n`\"
 LIBS=-lm -lreadline -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET	= cint
 SRCS	= picoc.cpp table.cpp lex.cpp parse.cpp expression.cpp heap.cpp type.cpp system_gpu.cpp \
 	variable.cpp clibrary.cpp platform.cpp include.cpp debug.cpp \
 	platform/platform_unix.c platform/library_unix.c \
-	cstdlib/standard.c cstdlib/math.c
+	cstdlib/standard.c cstdlib/math.c cstdlib/gpu.c
 OBJS	:= $(SRCS:%.c=%.o)
 
 all: $(TARGET)
@@ -37,4 +37,5 @@ debug.o: debug.cpp interpreter.h platform.h
 platform/platform_unix.o: platform/platform_unix.c picoc.h interpreter.h platform.h
 platform/library_unix.o: platform/library_unix.c interpreter.h platform.h
 cstdlib/standard.o: cstdlib/standard.c interpreter.h platform.h
+cstdlib/gpu.o: cstdlib/gpu.c interpreter.h platform.h system_gpu.h
 cstdlib/math.o: cstdlib/math.c interpreter.h platform.h

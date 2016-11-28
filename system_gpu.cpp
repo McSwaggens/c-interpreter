@@ -25,7 +25,7 @@ void SystemGPU::Display ()
 	window->display ();
 }
 
-void SystemGPU::Clear ()
+void SystemGPU::Clear (char* color)
 {
-	window->clear (sf::Color::Black);
+	window->clear (*(sf::Color*)(void*)color);
 }
